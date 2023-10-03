@@ -103,6 +103,12 @@ class DoubleConnectedList<T> {
 
         }
     }
+
+    fun set(index: Int, newValue: T){
+        checkBoundsForIndex(index = index)
+        findNodeByIndex(index = index).value = newValue
+    }
+
     fun insert(index: Int, value: T) {
         when {
             index == 0 && head == null -> {
@@ -156,5 +162,10 @@ class DoubleConnectedList<T> {
         if (currentListNode == null) throw IndexOutOfBoundsException("Нет элемента по индексу $index")
 
         return currentListNode
+    }
+
+    private fun checkBoundsForIndex(index: Int) {
+        if (index !in 0..<_size)
+            throw IndexOutOfBoundsException("Нет элемента по индексу $index")
     }
 }

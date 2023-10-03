@@ -24,11 +24,9 @@ fun main() {
 
 fun processDynamicArrayCase() {
     println("Введите элементы массива (через пробел):")
-    val dynamicArray = DynamicArray(readln().split(" ").map { it.toInt() }.toTypedArray())
+    val dynamicArray = DynamicArray(readln().split(" ").toTypedArray())
 
     dynamicArray.print()
-
-    println(dynamicArray.contains(2))
 
     println("Введите индекс для получения его значения:")
     val indexToGet = readln().toInt()
@@ -36,7 +34,7 @@ fun processDynamicArrayCase() {
     println(dynamicArray[indexToGet])
 
     println("Введите элемент для добавления:")
-    val toAdd = readln().toInt()
+    val toAdd = readln()
     dynamicArray.add(toAdd)
     dynamicArray.print()
 
@@ -46,74 +44,110 @@ fun processDynamicArrayCase() {
     dynamicArray.print()
 
     println("Введите индекс и элемент для замены:")
-    val (indexToReplace, newValue) = readln().split(" ").map { it.toInt() }
-    dynamicArray.set(indexToReplace, newValue)
+    val (indexToReplace, newValue) = readln().split(" ")
+    dynamicArray.set(indexToReplace.toInt(), newValue)
     dynamicArray.print()
 
     println("Введите индекс и элемент для вставки:")
-    val (indexToInsert, newNum) = readln().split(" ").map { it.toInt() }
-    dynamicArray.insert(indexToInsert, newNum)
+    val (indexToInsert, newNum) = readln().split(" ")
+    dynamicArray.insert(indexToInsert.toInt(), newNum)
     dynamicArray.print()
 }
 
 fun processDoubleConnectedListCase() {
-    val doubleConnectedList = DoubleConnectedList<Int>()
-
-    doubleConnectedList.add(25)
-    doubleConnectedList.add(30)
-    doubleConnectedList.add(100)
-
+    println("Введите элементы двусвязного списка (через пробел):")
+    val inputString = readln()
+    val doubleConnectedList = inputString.splitIntoTokensDoubleConnectedList()
     doubleConnectedList.print()
 
-    doubleConnectedList.popLast()
+    println("Введите индекс для получения его значения:")
+    val indexToGet = readln().toInt()
+    println(doubleConnectedList[indexToGet])
+
+    println("Введите элемент для добавления:")
+    val toAdd = readln()
+    doubleConnectedList.add(toAdd)
     doubleConnectedList.print()
 
-    val stack = Stack<Int>()
-
-    stack.print()
-
-    doubleConnectedList.remove(1)
-    doubleConnectedList.print()
-    doubleConnectedList.remove(0)
+    println("Введите индекс для удаления:")
+    val indexToRemove = readln().toInt()
+    doubleConnectedList.remove(indexToRemove)
     doubleConnectedList.print()
 
-    doubleConnectedList.insert(0, 10)
+    println("Введите индекс и элемент для замены:")
+    val (indexToReplace, newValue) = readln().split(" ")
+    doubleConnectedList.set(indexToReplace.toInt(), newValue)
     doubleConnectedList.print()
 
-    doubleConnectedList.insert(0, 20)
+    println("Введите индекс и элемент для вставки:")
+    val (indexToInsert, newNum) = readln().split(" ")
+    doubleConnectedList.insert(indexToInsert.toInt(), newNum)
     doubleConnectedList.print()
 
-    doubleConnectedList.insert(0, 30)
-    doubleConnectedList.print()
-
-    doubleConnectedList.insert(1, 25)
-    doubleConnectedList.print()
-
-    doubleConnectedList.insert(3, 5)
+    println("А сейчас список очистится, чтобы Вы посмотрели работу функции clear")
+    doubleConnectedList.clear()
     doubleConnectedList.print()
 }
 
 fun processStackCase() {
-    val stack = Stack<Int>()
-    stack.push(24)
-    stack.push(11)
-    stack.push(67)
+    println("Введите элементы стека (через пробел):")
+    val inputString = readln()
+    val stack = inputString.splitIntoTokensStack()
     stack.print()
-    println(stack.peek())
-    stack.pop()
+
+    println("Введите элемент для добавления:")
+    val toAdd = readln()
+    stack.push(toAdd)
+    stack.print()
+
+    println("Сейчас удалится и выведется последний элемент:")
+    println("Сейчас удалился элемент: ${stack.pop()}")
+    stack.print()
+
+    println("Значение последнего элемента: ${stack.peek()}")
 }
 
 fun processAlgorithm() {
-
+    println("Введите выражение (каждый символ разделяйте пробелом):")
     val inputString = readln()
     val str = Algorithm(inputString).toPostfix()
-    println(str)
-    val result = Algorithm(inputString).calc()
-    println(result)
+    println("Выражение в постфиксной записи: ${str}")
+    val result = Algorithm(inputString).calculator()
+    println("Результат: ${result}")
+//    Можете вбивать эти примеры и сразу проверите правильность расчетов:
+//    12 * 5 - 36 / 3 //48
+//    ( cos ( 5 ) - 3 ) * 4 //-10.86535
 
-//    ("   12*5   - 36 / 3") // 48
-//
-//    ("12 + 50 / 5 - 3  ") // 19
-//
+}
+fun String.splitIntoTokensDoubleConnectedList(): DoubleConnectedList<String> {
+    val doubleConnectedList = DoubleConnectedList<String>()
 
+    var currentToken = ""
+    for (symbol in this) {
+        if (symbol == ' ') {
+            doubleConnectedList.add(currentToken)
+            currentToken = ""
+        } else {
+            currentToken += symbol
+        }
+    }
+    if (currentToken.isNotEmpty()) doubleConnectedList.add(currentToken)
+
+    return doubleConnectedList
+}
+fun String.splitIntoTokensStack(): Stack<String> {
+    val stack = Stack<String>()
+
+    var currentToken = ""
+    for (symbol in this) {
+        if (symbol == ' ') {
+            stack.push(currentToken)
+            currentToken = ""
+        } else {
+            currentToken += symbol
+        }
+    }
+    if (currentToken.isNotEmpty()) stack.push(currentToken)
+
+    return stack
 }

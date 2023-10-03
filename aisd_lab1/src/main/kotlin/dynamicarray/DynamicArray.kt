@@ -87,8 +87,6 @@ class DynamicArray<T>(
         array[index] = value
     }
 
-    // region List interface
-
     @Suppress("UNCHECKED_CAST")
     fun containsAll(elements: Collection<T>): Boolean {
         return elements.map { element ->
