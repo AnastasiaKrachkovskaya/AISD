@@ -13,7 +13,7 @@ class DynamicArray<T>(
 
     private var capacity: Int = initialCapacity
 
-    private var realSize: Int = 0
+    var realSize: Int = 0
     val size: Int
         get() = realSize
 
@@ -21,11 +21,22 @@ class DynamicArray<T>(
         get() = realSize - 1
 
     constructor(
-        array: Array<T>
+        array: Array<out T>
     ) : this(initialCapacity = array.size) {
         array.copyInto(this.array)
         this.realSize = array.size
     }
+
+    private constructor(
+        anyArrayInnerConstructorParam: AnyArrayInnerConstructorParam,
+    ) : this(initialCapacity = anyArrayInnerConstructorParam.array.size) {
+        anyArrayInnerConstructorParam.array.copyInto(this.array)
+        this.realSize = anyArrayInnerConstructorParam.array.size
+    }
+
+    private class AnyArrayInnerConstructorParam(
+        val array: Array<Any?>
+    )
 
     @Suppress("UNCHECKED_CAST")
     operator fun get(index: Int): T {
@@ -33,7 +44,17 @@ class DynamicArray<T>(
         return array[index] as T
     }
 
-    fun set(index: Int, value: T) {
+    fun slice(
+        sliceRange: IntRange
+    ): DynamicArray<T> {
+        val slicedArray = Array<Any?>(size = sliceRange.count()) {
+            get(it)
+        }
+
+        return DynamicArray(anyArrayInnerConstructorParam = AnyArrayInnerConstructorParam(slicedArray))
+    }
+
+    operator fun set(index: Int, value: T) {
         checkBoundsForIndex(index = index)
         array[index] = value
     }
@@ -63,7 +84,7 @@ class DynamicArray<T>(
         realSize--
     }
 
-    fun removeLast(){
+    fun removeLast() {
         array[lastIndex] = null
         realSize--
     }
@@ -121,8 +142,6 @@ class DynamicArray<T>(
 
         }
     }
-
-    // endregion list interface
 
     fun print() {
         print("[")

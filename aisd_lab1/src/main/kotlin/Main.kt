@@ -1,3 +1,5 @@
+package aisd_lab1
+
 import algorithm.Algorithm
 import doubleconnectedList.DoubleConnectedList
 import dynamicarray.DynamicArray
@@ -24,7 +26,7 @@ fun main() {
 
 fun processDynamicArrayCase() {
     println("Введите элементы массива (через пробел):")
-    val dynamicArray = DynamicArray(readln().split(" ").toTypedArray())
+    val dynamicArray = DynamicArray<String>(readln().split(" ").toTypedArray())
 
     dynamicArray.print()
 
