@@ -1,6 +1,7 @@
 package timsort
 
 import dynamicarray.DynamicArray
+import kotlin.math.pow
 
 fun <T : Comparable<T>> timSort(arr: DynamicArray<T>): DynamicArray<T> {
     val n = arr.size
@@ -22,10 +23,6 @@ fun <T : Comparable<T>> timSort(arr: DynamicArray<T>): DynamicArray<T> {
         run *= 2
     }
     return arr
-}
-
-fun <T> Comparable<T>.isGreaterThan(other: T): Boolean {
-    return this > other
 }
 
 fun getMinrun(n: Int): Int {
@@ -59,24 +56,44 @@ fun <T : Comparable<T>> merge(arr: DynamicArray<T>, left: Int, mid: Int, right: 
     var i = 0
     var j = 0
     var k = left
-    var gallop = 0
+
+    var gallopL = 0
+    var gallopR = 0
+
     while (i < len1 && j < len2) {
-        if (gallop == 7) {
-            if (leftArray[i] <= rightArray[j]) {
-                arr[k++] = leftArray[i++];
-                if (i < len1) arr[k++] = leftArray[i++];
-            } else {
-                i -= 2;
-                k -= 2;
-                gallop = 0;
+        if (gallopL == GALLOP_MAX_COUNTER) {
+            val index = gallopMode(arr = leftArray, left = i, comparableValue = rightArray[j])
+            gallopL = 0
+            while (i <= index) {
+                arr[k] = leftArray[i]
+                i++
+                k++
             }
-        } else if (leftArray[i] <= rightArray[j]) {
-            arr[k++] = leftArray[i++];
-            gallop++;
-        } else {
-            arr[k++] = rightArray[j++];
-            gallop = 0;
+            continue
         }
+        if (gallopR == GALLOP_MAX_COUNTER) {
+            val index = gallopMode(arr = rightArray, left = j, comparableValue = leftArray[i])
+            gallopR = 0
+            while (j <= index) {
+                arr[k] = leftArray[i]
+                j++
+                k++
+            }
+            continue
+        }
+
+        if (leftArray[i] <= rightArray[j]) {
+            arr[k] = leftArray[i]
+            i++
+            gallopL++
+            gallopR = 0
+        } else {
+            arr[k] = rightArray[j]
+            j++
+            gallopR++
+            gallopL = 0
+        }
+        k++
     }
     while (i < len1) {
         arr[k] = leftArray[i]
@@ -88,4 +105,50 @@ fun <T : Comparable<T>> merge(arr: DynamicArray<T>, left: Int, mid: Int, right: 
         j++
         k++
     }
+}
+
+
+private const val GALLOP_MAX_COUNTER = 7
+private fun <T : Comparable<T>> gallopMode(arr: DynamicArray<T>, left: Int, comparableValue: T): Int {
+    var powerOf2 = 1
+    fun getCheckableIndex(): Int {
+        return (left + 2f.pow(powerOf2)).toInt()
+    }
+
+    var checkableIndex = getCheckableIndex()
+    while (checkableIndex < arr.size) {
+        if (arr[checkableIndex] > comparableValue) {
+            val indexOfFirstGreater =
+                timSortBinarySearch(
+                    arr = arr,
+                    left = left,
+                    right = arr.size - 1,
+                    comparableValue = comparableValue,
+                )
+            return indexOfFirstGreater
+        }
+        powerOf2++
+        checkableIndex = getCheckableIndex()
+    }
+
+    return arr.size - 1
+}
+
+private fun <T : Comparable<T>> timSortBinarySearch(
+    arr: DynamicArray<T>,
+    left: Int,
+    right: Int,
+    comparableValue: T
+): Int {
+    var start = left
+    while (start <= right - 1) {
+        val mid = (start + right) / 2
+
+        if (comparableValue <= arr[mid]) {
+            return mid
+        } else {
+            start = mid + 1
+        }
+    }
+    return right
 }

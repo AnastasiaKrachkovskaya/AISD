@@ -92,7 +92,7 @@ class DoubleConnectedList<T> {
             var index: Int = 0
 
             override fun hasNext(): Boolean {
-                return index < _size - 1
+                return index < _size
             }
 
             override fun next(): T {

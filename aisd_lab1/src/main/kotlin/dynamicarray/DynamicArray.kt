@@ -48,7 +48,7 @@ class DynamicArray<T>(
         sliceRange: IntRange
     ): DynamicArray<T> {
         val slicedArray = Array<Any?>(size = sliceRange.count()) {
-            get(it)
+            get(it + sliceRange.first)
         }
 
         return DynamicArray(anyArrayInnerConstructorParam = AnyArrayInnerConstructorParam(slicedArray))
