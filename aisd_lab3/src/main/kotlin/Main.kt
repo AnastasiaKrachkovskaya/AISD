@@ -1,9 +1,9 @@
 import extenstions.removeWhitespaces
-import trees.*
+import trees.AVLTree
+import trees.BinaryTree
+import trees.BinaryTreeNode
+import trees.validateTreeString
 import java.io.File
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
 
 fun main() {
     println("Прямой обход обычного двоичного дерева:")
@@ -57,7 +57,7 @@ fun createTree() {
     println(tree.traversePreOrder())
 }
 
-fun parse(input: String) : BinaryTree? {
+fun parse(input: String): BinaryTree? {
     val result = validateTreeString(treeString = input)
 
     result.fold(

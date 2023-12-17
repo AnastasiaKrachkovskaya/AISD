@@ -13,7 +13,7 @@ class DynamicArray<T>(
 
     private var capacity: Int = initialCapacity
 
-    var realSize: Int = 0
+    private var realSize: Int = 0
     val size: Int
         get() = realSize
 
@@ -114,7 +114,7 @@ class DynamicArray<T>(
             array.any {
                 it as T == element
             }
-        }.all { true }
+        }.all { value -> value }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -131,7 +131,7 @@ class DynamicArray<T>(
             var index: Int = 0
 
             override fun hasNext(): Boolean {
-                return index < realSize - 1
+                return index < realSize
             }
 
             override fun next(): T {
@@ -139,7 +139,6 @@ class DynamicArray<T>(
                 index++
                 return value
             }
-
         }
     }
 
