@@ -1,39 +1,40 @@
 import dynamicarray.DynamicArray
+import graphs.AdjacencyMatrix
 import graphs.Edge
+import graphs.bfs
+import graphs.dfs
 import timsort.timSort
-import java.io.File
 
 fun main() {
-    val file = File("aisd_cw/cw.txt")
-    val inputLines = file.readLines()
-    val vertexKeys = inputLines.first().split(" ")
-    val adjacencyMatrixLines = inputLines.drop(1)
+    val adjacencyMatrix = AdjacencyMatrix.createFromFile("aisd_cw/cw.txt")
 
-    // построение списка ребер
-    val edgesArray = DynamicArray<Edge>()
-    adjacencyMatrixLines.forEachIndexed { columnIndex, matrixLine ->
-        matrixLine.split(" ").forEachIndexed WeightsForEach@{ rowIndex, weightValueStr ->
-            val weight = weightValueStr.toInt()
-            // так как граф неориентированный должен быть
-            if (rowIndex < columnIndex) return@WeightsForEach
-            // 0 значит, что ребра нет
-            if (weight == 0) return@WeightsForEach
-            edgesArray.add(
-                value = Edge(
-                    vertex1 = vertexKeys[columnIndex],
-                    vertex2 = vertexKeys[rowIndex],
-                    weight = weight,
-                )
-            )
+    val edgesDynamicArray = adjacencyMatrix.toEdgesDynamicArray()
+    println("\nПредставление в виде списка ребер:")
+    for (edge in edgesDynamicArray) {
+        println("${edge.vertex1} ${edge.vertex2} ${edge.weight}")
+    }
+
+    val adjacencyList = adjacencyMatrix.toAdjacencyList()
+    println("\nПредставление в виде списка смежности:")
+    for (vertexAdjacency in adjacencyList) {
+        print("\n${vertexAdjacency.first} |")
+        for (connectedVertex in vertexAdjacency.second) {
+            print("(${connectedVertex.first},${connectedVertex.second}) ")
         }
     }
 
+    println("\n\nОбход графа в глубину с вершины A:")
+    adjacencyMatrix.dfs(startVertex = "A")
+
+    println("\n\nОбход графа в ширину с вершины A:")
+    adjacencyMatrix.bfs(startVertex = "A")
+
     // сортировка списка ребер по неубыванию
-    val sortedEdges = timSort(edgesArray)
+    val sortedEdges = timSort(edgesDynamicArray)
     val minSpanningTreeVertexesKeys = DynamicArray<String>()
     val minSpanningTreeEdges = DynamicArray<Edge>()
 
-    for (index in 0 until  sortedEdges.size) {
+    for (index in 0 until sortedEdges.size) {
         val currentEdge = sortedEdges[index]
 
         var shouldAddCurrentEdge = false
@@ -48,10 +49,6 @@ fun main() {
 
         if (shouldAddCurrentEdge) {
             minSpanningTreeEdges.add(currentEdge)
-        }
-
-        if (minSpanningTreeVertexesKeys.containsAll(vertexKeys)) {
-            break
         }
     }
 

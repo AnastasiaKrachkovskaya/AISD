@@ -126,6 +126,10 @@ class DynamicArray<T>(
         return realSize == 0
     }
 
+    fun indexOf(element: T): Int {
+        return array.indexOf(element)
+    }
+
     operator fun iterator(): Iterator<T> {
         return object : Iterator<T> {
             var index: Int = 0

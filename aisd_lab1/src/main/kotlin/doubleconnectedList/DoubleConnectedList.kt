@@ -39,6 +39,12 @@ class DoubleConnectedList<T> {
         return lastValue
     }
 
+    fun popFirst(): T {
+        val firstValue = requireNotNull(head).value
+        remove(index = 0)
+        return firstValue
+    }
+
     fun lastElement(): T {
         val lastValue = requireNotNull(tail).value
         return lastValue
